@@ -47,7 +47,6 @@ export function ExoplanetData() {
           Exoplanet Statistics
         </motion.h2>
         <p className="text-center text-gray-400 mb-16 text-lg">
-          Exploring the vastness of discovered worlds
         </p>
 
         {/* Statistics Cards */}

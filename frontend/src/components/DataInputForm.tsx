@@ -71,6 +71,9 @@ export default function DataInputForm({ onSubmit = (data) => console.log(data) }
   });
 
   const [errors, setErrors] = useState<ValidationErrors>({});
+  const [loading, setLoading] = useState(false);
+  const [result, setResult] = useState<{ prediction: string; probability: number } | null>(null);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   // Validation function to check if a number has at least 4 different digits
   const hasFourDifferentDigits = (value: string): boolean => {
@@ -100,7 +103,7 @@ export default function DataInputForm({ onSubmit = (data) => console.log(data) }
     return undefined;
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
     // Validate all fields
@@ -120,6 +123,32 @@ export default function DataInputForm({ onSubmit = (data) => console.log(data) }
     if (Object.keys(newErrors).length === 0) {
       onSubmit(formData);
     }
+
+    try {
+      setLoading(true);
+      setErrorMessage(null);
+      setResult(null);
+
+      const response = await fetch('https://main.d2k3jsz1ay4sj1.amplifyapp.com/predict', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData),
+      });
+
+      if (!response.ok) throw new Error('Network response was not ok');
+      const data = await response.json();
+
+      setResult({
+        prediction: data.prediction,
+        probability: data.probability,
+      });
+    } catch (err) {
+      setErrorMessage('Error analyzing data. Please try again.');
+    } finally {
+      setLoading(false);
+    }
+
+
   };
 
   const handleChange = (field: keyof FormData, value: string) => {
