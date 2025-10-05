@@ -3,6 +3,7 @@ import { FormData } from './DataInputForm';
 import { Badge } from './ui/badge';
 import { Progress } from './ui/progress';
 import { CheckCircle2, TrendingDown, Activity } from 'lucide-react';
+import { StarBackground } from './StarBackground';
 
 interface ResultsDisplayProps {
   formData: FormData;
@@ -97,6 +98,8 @@ export function ResultsDisplay({ formData }: ResultsDisplayProps) {
   );
 
   return (
+    <div>
+    <StarBackground starCount={500} />
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
@@ -233,5 +236,6 @@ export function ResultsDisplay({ formData }: ResultsDisplayProps) {
         </div>
       </div>
     </motion.div>
+    </div>
   );
 }
