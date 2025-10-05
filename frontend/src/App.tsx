@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import { HeroSection } from './components/HeroSection';
 import { ExoplanetData } from './components/ExoplanetData';
-import { DataInputForm, FormData } from './components/DataInputForm';
 import { ResultsDisplay } from './components/ResultsDisplay';
 import { StarBackground } from './components/StarBackground';
+import DataInputForm, { FormData } from './components/DataInputForm';
 
 export default function App() {
   const [submittedData, setSubmittedData] = useState<FormData | null>(null);

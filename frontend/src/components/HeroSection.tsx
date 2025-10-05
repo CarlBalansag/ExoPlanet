@@ -138,7 +138,7 @@ export function HeroSection() {
                 color: '#c084fc',
               }}
             >
-              FUTURISTIC TECHNOLOGY
+              Nasa Space App Challenge
             </span>
           </motion.div>
 

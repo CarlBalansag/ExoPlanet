@@ -2,68 +2,68 @@ import { motion } from 'framer-motion';
 import { FormData } from './DataInputForm';
 import { Badge } from './ui/badge';
 import { Progress } from './ui/progress';
-import { CheckCircle2, XCircle, AlertCircle } from 'lucide-react';
+import { CheckCircle2, TrendingDown, Activity } from 'lucide-react';
 
 interface ResultsDisplayProps {
   formData: FormData;
 }
 
 export function ResultsDisplay({ formData }: ResultsDisplayProps) {
-  // Mock analysis calculations
-  const calculateHabitabilityScore = () => {
-    const tempScore = Math.max(0, 100 - Math.abs(parseFloat(formData.equilibriumTemp) - 288) * 2);
-    const radiusScore = Math.max(0, 100 - Math.abs(parseFloat(formData.planetRadius) - 1) * 50);
-    const massScore = Math.max(0, 100 - Math.abs(parseFloat(formData.planetMass) - 1) * 20);
-    return Math.round((tempScore + radiusScore + massScore) / 3);
+  // Transit photometry calculations
+  const calculateTransitDepth = () => {
+    const flux = parseFloat(formData.flux);
+    const depth = ((1 - flux) * 100).toFixed(4);
+    return depth;
   };
 
-  const calculateDensity = () => {
-    const mass = parseFloat(formData.planetMass);
-    const radius = parseFloat(formData.planetRadius);
-    return ((mass / (radius ** 3)) * 5.51).toFixed(2);
+  const calculateTransitQuality = () => {
+    const flux = parseFloat(formData.flux);
+    const depth = (1 - flux) * 100;
+    
+    if (depth > 0.5) return { quality: 'Excellent', score: 95, color: 'text-green-400' };
+    if (depth > 0.1) return { quality: 'Good', score: 75, color: 'text-blue-400' };
+    if (depth > 0.01) return { quality: 'Fair', score: 50, color: 'text-yellow-400' };
+    return { quality: 'Poor', score: 25, color: 'text-red-400' };
   };
 
-  const classifyPlanet = () => {
-    const radius = parseFloat(formData.planetRadius);
-    if (radius < 1.25) return 'Terrestrial';
-    if (radius < 2) return 'Super-Earth';
-    if (radius < 4) return 'Mini-Neptune';
-    if (radius < 10) return 'Neptune-like';
-    return 'Jupiter-like';
+  const estimateRelativeSize = () => {
+    const flux = parseFloat(formData.flux);
+    const depth = (1 - flux) * 100;
+    // Depth ≈ (Rp/Rs)^2 * 100
+    const ratio = Math.sqrt(depth / 100);
+    return (ratio * 100).toFixed(2);
   };
 
-  const assessHabitableZone = () => {
-    const temp = parseFloat(formData.equilibriumTemp);
-    if (temp >= 273 && temp <= 373) return { status: 'in', color: 'white' };
-    if (temp >= 200 && temp <= 400) return { status: 'near', color: 'gray' };
-    return { status: 'outside', color: 'gray' };
+  const calculateOrbitalFrequency = () => {
+    const period = parseFloat(formData.period);
+    return (1 / period).toFixed(6);
   };
 
-  const habitabilityScore = calculateHabitabilityScore();
-  const density = calculateDensity();
-  const planetType = classifyPlanet();
-  const habitableZone = assessHabitableZone();
+  const transitDepth = calculateTransitDepth();
+  const transitQuality = calculateTransitQuality();
+  const relativeSize = estimateRelativeSize();
+  const orbitalFreq = calculateOrbitalFrequency();
 
   const metrics = [
     { 
-      label: 'Surface Gravity', 
-      value: `${((parseFloat(formData.planetMass) / (parseFloat(formData.planetRadius) ** 2))).toFixed(2)} g`,
-      description: 'Relative to Earth'
+      label: 'Transit Depth', 
+      value: `${transitDepth}%`,
+      description: 'Percentage of starlight blocked'
     },
     { 
-      label: 'Escape Velocity', 
-      value: `${(11.2 * Math.sqrt(parseFloat(formData.planetMass) / parseFloat(formData.planetRadius))).toFixed(1)} km/s`,
-      description: 'Minimum velocity to escape gravity'
+      label: 'Relative Planet Size', 
+      value: `${relativeSize}%`,
+      description: 'Planet radius / Star radius (%)'
     },
     { 
-      label: 'Density', 
-      value: `${density} g/cm³`,
-      description: 'Bulk density'
+      label: 'Orbital Frequency', 
+      value: `${orbitalFreq} day⁻¹`,
+      description: 'Orbits per day'
     },
     { 
-      label: 'Year Length', 
-      value: `${parseFloat(formData.orbitalPeriod).toFixed(1)} days`,
-      description: 'Orbital period around host star'
+      label: 'Transit Duration', 
+      value: `${(parseFloat(formData.period) * 0.1).toFixed(2)} hours`,
+      description: 'Estimated transit duration'
     },
   ];
 
@@ -113,18 +113,18 @@ export function ResultsDisplay({ formData }: ResultsDisplayProps) {
           transition={{ duration: 0.6 }}
           className="text-4xl md:text-6xl text-center mb-4 bg-gradient-to-r from-white via-purple-200 to-white bg-clip-text text-transparent"
         >
-          Analysis Results
+          Transit Analysis Results
         </motion.h2>
         <p className="text-center text-gray-400 mb-16 text-lg">
-          Comprehensive analysis for {formData.planetName}
+          Photometric transit analysis and characterization
         </p>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          {/* Habitability Score */}
+          {/* Transit Quality Assessment */}
           <GlassCard delay={0.2}>
             <div className="p-6 md:p-8">
               <h3 className="text-xl md:text-2xl mb-6 bg-gradient-to-r from-purple-300 to-purple-100 bg-clip-text text-transparent">
-                Habitability Assessment
+                Transit Signal Quality
               </h3>
               <div className="space-y-6">
                 <div className="text-center">
@@ -132,13 +132,13 @@ export function ResultsDisplay({ formData }: ResultsDisplayProps) {
                     initial={{ scale: 0 }}
                     animate={{ scale: 1 }}
                     transition={{ duration: 0.8, delay: 0.4, type: 'spring' }}
-                    className="text-6xl md:text-7xl mb-3 bg-gradient-to-r from-purple-400 to-purple-300 bg-clip-text text-transparent"
+                    className={`text-6xl md:text-7xl mb-3 ${transitQuality.color}`}
                   >
-                    {habitabilityScore}%
+                    {transitQuality.score}%
                   </motion.div>
-                  <p className="text-gray-400">Habitability Score</p>
+                  <p className="text-gray-400">Detection Confidence</p>
                 </div>
-                <Progress value={habitabilityScore} className="h-3" />
+                <Progress value={transitQuality.score} className="h-3" />
                 
                 <div 
                   className="mt-6 space-y-4 rounded-xl p-4 border"
@@ -148,20 +148,18 @@ export function ResultsDisplay({ formData }: ResultsDisplayProps) {
                   }}
                 >
                   <div className="flex items-center justify-between">
-                    <span className="text-purple-200">Planet Classification:</span>
+                    <span className="text-purple-200">Signal Quality:</span>
                     <Badge className="bg-purple-500/20 text-purple-200 border-purple-400/30">
-                      {planetType}
+                      {transitQuality.quality}
                     </Badge>
                   </div>
                   
                   <div className="flex items-center justify-between">
-                    <span className="text-purple-200">Habitable Zone:</span>
+                    <span className="text-purple-200">Transit Detected:</span>
                     <div className="flex items-center gap-2">
-                      {habitableZone.status === 'in' && <CheckCircle2 className="w-5 h-5 text-purple-300" />}
-                      {habitableZone.status === 'near' && <AlertCircle className="w-5 h-5 text-purple-400" />}
-                      {habitableZone.status === 'outside' && <XCircle className="w-5 h-5 text-purple-600" />}
+                      <CheckCircle2 className="w-5 h-5 text-purple-300" />
                       <Badge className="bg-purple-500/20 text-purple-200 border-purple-400/30">
-                        {habitableZone.status === 'in' ? 'Inside' : habitableZone.status === 'near' ? 'Nearby' : 'Outside'}
+                        Confirmed
                       </Badge>
                     </div>
                   </div>
@@ -170,11 +168,11 @@ export function ResultsDisplay({ formData }: ResultsDisplayProps) {
             </div>
           </GlassCard>
 
-          {/* Physical Properties */}
+          {/* Transit Metrics */}
           <GlassCard delay={0.3}>
             <div className="p-6 md:p-8">
               <h3 className="text-xl md:text-2xl mb-6 text-white">
-                Physical Properties
+                Transit Characteristics
               </h3>
               <div className="space-y-4">
                 {metrics.map((metric, index) => (
@@ -200,11 +198,11 @@ export function ResultsDisplay({ formData }: ResultsDisplayProps) {
             </div>
           </GlassCard>
 
-          {/* Stellar Parameters */}
+          {/* Observation Data */}
           <GlassCard delay={0.4}>
             <div className="p-6 md:p-8">
               <h3 className="text-xl md:text-2xl mb-6 text-white">
-                Host Star Analysis
+                Observation Parameters
               </h3>
               <div className="space-y-4">
                 <div 
@@ -214,8 +212,8 @@ export function ResultsDisplay({ formData }: ResultsDisplayProps) {
                     borderColor: 'rgba(255, 255, 255, 0.05)',
                   }}
                 >
-                  <span className="text-gray-400">Stellar Mass:</span>
-                  <span className="text-white">{formData.stellarMass} M☉</span>
+                  <span className="text-gray-400">Time (BJD):</span>
+                  <span className="text-white">{formData.time}</span>
                 </div>
                 <div 
                   className="flex justify-between p-3 rounded-xl border"
@@ -224,8 +222,8 @@ export function ResultsDisplay({ formData }: ResultsDisplayProps) {
                     borderColor: 'rgba(255, 255, 255, 0.05)',
                   }}
                 >
-                  <span className="text-gray-400">Stellar Radius:</span>
-                  <span className="text-white">{formData.stellarRadius} R☉</span>
+                  <span className="text-gray-400">Normalized Flux:</span>
+                  <span className="text-white">{formData.flux}</span>
                 </div>
                 <div 
                   className="flex justify-between p-3 rounded-xl border"
@@ -234,8 +232,8 @@ export function ResultsDisplay({ formData }: ResultsDisplayProps) {
                     borderColor: 'rgba(255, 255, 255, 0.05)',
                   }}
                 >
-                  <span className="text-gray-400">Stellar Temperature:</span>
-                  <span className="text-white">{formData.stellarTemp} K</span>
+                  <span className="text-gray-400">Orbital Period:</span>
+                  <span className="text-white">{formData.period} days</span>
                 </div>
                 <div 
                   className="flex justify-between p-3 rounded-xl border"
@@ -244,20 +242,8 @@ export function ResultsDisplay({ formData }: ResultsDisplayProps) {
                     borderColor: 'rgba(255, 255, 255, 0.05)',
                   }}
                 >
-                  <span className="text-gray-400">Distance from Earth:</span>
-                  <span className="text-white">{formData.distance} ly</span>
-                </div>
-                <div 
-                  className="flex justify-between items-center p-3 rounded-xl border"
-                  style={{
-                    background: 'rgba(255, 255, 255, 0.03)',
-                    borderColor: 'rgba(255, 255, 255, 0.05)',
-                  }}
-                >
-                  <span className="text-gray-400">Discovery Method:</span>
-                  <Badge className="bg-white/10 text-gray-300 border-white/20">
-                    {formData.discoveryMethod}
-                  </Badge>
+                  <span className="text-gray-400">Transit Epoch (T₀):</span>
+                  <span className="text-white">{formData.t0}</span>
                 </div>
               </div>
             </div>

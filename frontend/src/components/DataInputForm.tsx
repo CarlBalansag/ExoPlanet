@@ -1,60 +1,150 @@
+// imports
 import { motion } from 'framer-motion';
 import { useState } from 'react';
 import { Input } from './ui/input';
 import { Label } from './ui/label';
 import { Button } from './ui/button';
 import { Textarea } from './ui/textarea';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
-import { StarBackground } from './StarBackground';
 
+// star background component
+function StarBackground({ starCount = 500 }) {
+  const stars = Array.from({ length: starCount }, (_, i) => ({
+    id: i,
+    x: Math.random() * 100,
+    y: Math.random() * 100,
+    size: Math.random() * 2 + 0.5,
+    opacity: Math.random() * 0.5 + 0.3,
+    duration: Math.random() * 3 + 2,
+  }));
+
+  return (
+    <div className="absolute inset-0 overflow-hidden pointer-events-none">
+      {stars.map((star) => (
+        <motion.div
+          key={star.id}
+          className="absolute rounded-full bg-white"
+          style={{
+            left: `${star.x}%`,
+            top: `${star.y}%`,
+            width: `${star.size}px`,
+            height: `${star.size}px`,
+          }}
+          animate={{
+            opacity: [star.opacity, star.opacity * 0.3, star.opacity],
+          }}
+          transition={{
+            duration: star.duration,
+            repeat: Infinity,
+            ease: 'easeInOut',
+          }}
+        />
+      ))}
+    </div>
+  );
+}
+
+// interfaces
 interface DataInputFormProps {
   onSubmit: (data: FormData) => void;
 }
 
 export interface FormData {
-  planetName: string;
-  stellarMass: string;
-  orbitalPeriod: string;
-  planetRadius: string;
-  planetMass: string;
-  equilibriumTemp: string;
-  discoveryMethod: string;
-  stellarRadius: string;
-  stellarTemp: string;
-  distance: string;
+  time: string;
+  flux: string;
+  period: string;
+  t0: string;
   notes: string;
 }
 
-export function DataInputForm({ onSubmit }: DataInputFormProps) {
+interface ValidationErrors {
+  time?: string;
+  flux?: string;
+  period?: string;
+  t0?: string;
+}
+
+// main component
+export default function DataInputForm({ onSubmit = (data) => console.log(data) }: Partial<DataInputFormProps>) {
   const [formData, setFormData] = useState<FormData>({
-    planetName: '',
-    stellarMass: '',
-    orbitalPeriod: '',
-    planetRadius: '',
-    planetMass: '',
-    equilibriumTemp: '',
-    discoveryMethod: '',
-    stellarRadius: '',
-    stellarTemp: '',
-    distance: '',
+    time: '',
+    flux: '',
+    period: '',
+    t0: '',
     notes: '',
   });
 
+  const [errors, setErrors] = useState<ValidationErrors>({});
+
+  const hasFourDifferentDigits = (value: string): boolean => {
+    if (!value) return false;
+    const digits = value.replace(/[^0-9]/g, '');
+    const uniqueDigits = new Set(digits.split(''));
+    return uniqueDigits.size >= 4;
+  };
+
+  const validateField = (field: keyof FormData, value: string): string | undefined => {
+    if (!value) return undefined;
+
+    switch (field) {
+      case 'time':
+      case 'flux':
+        if (!hasFourDifferentDigits(value)) {
+          return 'Invalid number';
+        }
+        break;
+      case 'period':
+      case 't0':
+        if (isNaN(Number(value)) || value.trim() === '') {
+          return 'Invalid number';
+        }
+        break;
+    }
+    return undefined;
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onSubmit(formData);
+
+    const newErrors: ValidationErrors = {};
+    (Object.keys(formData) as Array<keyof FormData>).forEach((field) => {
+      if (field !== 'notes') {
+        const error = validateField(field, formData[field]);
+        if (error) newErrors[field] = error;
+      }
+    });
+
+    setErrors(newErrors);
+
+    if (Object.keys(newErrors).length === 0) {
+      onSubmit(formData);
+    }
   };
 
   const handleChange = (field: keyof FormData, value: string) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
+    setFormData((prev) => ({ ...prev, [field]: value }));
+    if (errors[field]) {
+      setErrors((prev) => {
+        const newErrors = { ...prev };
+        delete newErrors[field];
+        return newErrors;
+      });
+    }
+  };
+
+  const handleBlur = (field: keyof FormData) => {
+    if (field !== 'notes' && formData[field]) {
+      const error = validateField(field, formData[field]);
+      if (error) {
+        setErrors((prev) => ({ ...prev, [field]: error }));
+      }
+    }
   };
 
   return (
     <div className="min-h-screen py-24 px-4 relative bg-black">
       <StarBackground starCount={500} />
-      {/* Purple background glow */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full bg-purple-600/10 blur-3xl opacity-50" />
-      
+
       <motion.div
         initial={{ opacity: 0, y: 50 }}
         whileInView={{ opacity: 1, y: 0 }}
@@ -100,164 +190,40 @@ export function DataInputForm({ onSubmit }: DataInputFormProps) {
               }}
             >
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {/* Planet Name */}
-                <div className="space-y-2">
-                  <Label htmlFor="planetName" className="text-purple-200">Planet Name</Label>
-                  <Input
-                    id="planetName"
-                    value={formData.planetName}
-                    onChange={(e) => handleChange('planetName', e.target.value)}
-                    placeholder="e.g., Kepler-452b"
-                    className="glass-input text-white placeholder:text-gray-600"
-                    required
-                  />
-                </div>
-
-                {/* Stellar Mass */}
-                <div className="space-y-2">
-                  <Label htmlFor="stellarMass" className="text-purple-200">Stellar Mass (M☉)</Label>
-                  <Input
-                    id="stellarMass"
-                    type="number"
-                    step="0.01"
-                    value={formData.stellarMass}
-                    onChange={(e) => handleChange('stellarMass', e.target.value)}
-                    placeholder="e.g., 1.04"
-                    className="glass-input text-white placeholder:text-purple-500/40"
-                    required
-                  />
-                </div>
-
-                {/* Orbital Period */}
-                <div className="space-y-2">
-                  <Label htmlFor="orbitalPeriod" className="text-purple-200">Orbital Period (days)</Label>
-                  <Input
-                    id="orbitalPeriod"
-                    type="number"
-                    step="0.01"
-                    value={formData.orbitalPeriod}
-                    onChange={(e) => handleChange('orbitalPeriod', e.target.value)}
-                    placeholder="e.g., 384.8"
-                    className="glass-input text-white placeholder:text-purple-500/40"
-                    required
-                  />
-                </div>
-
-                {/* Planet Radius */}
-                <div className="space-y-2">
-                  <Label htmlFor="planetRadius" className="text-purple-200">Planet Radius (R⊕)</Label>
-                  <Input
-                    id="planetRadius"
-                    type="number"
-                    step="0.01"
-                    value={formData.planetRadius}
-                    onChange={(e) => handleChange('planetRadius', e.target.value)}
-                    placeholder="e.g., 1.6"
-                    className="glass-input text-white placeholder:text-purple-500/40"
-                    required
-                  />
-                </div>
-
-                {/* Planet Mass */}
-                <div className="space-y-2">
-                  <Label htmlFor="planetMass" className="text-purple-200">Planet Mass (M⊕)</Label>
-                  <Input
-                    id="planetMass"
-                    type="number"
-                    step="0.01"
-                    value={formData.planetMass}
-                    onChange={(e) => handleChange('planetMass', e.target.value)}
-                    placeholder="e.g., 5.0"
-                    className="glass-input text-white placeholder:text-purple-500/40"
-                    required
-                  />
-                </div>
-
-                {/* Equilibrium Temperature */}
-                <div className="space-y-2">
-                  <Label htmlFor="equilibriumTemp" className="text-purple-200">Equilibrium Temp (K)</Label>
-                  <Input
-                    id="equilibriumTemp"
-                    type="number"
-                    step="0.01"
-                    value={formData.equilibriumTemp}
-                    onChange={(e) => handleChange('equilibriumTemp', e.target.value)}
-                    placeholder="e.g., 265"
-                    className="glass-input text-white placeholder:text-purple-500/40"
-                    required
-                  />
-                </div>
-
-                {/* Discovery Method */}
-                <div className="space-y-2">
-                  <Label htmlFor="discoveryMethod" className="text-purple-200">Discovery Method</Label>
-                  <Select value={formData.discoveryMethod} onValueChange={(value) => handleChange('discoveryMethod', value)} required>
-                    <SelectTrigger className="glass-input text-white">
-                      <SelectValue placeholder="Select method" />
-                    </SelectTrigger>
-                    <SelectContent 
-                      className="border-white/10 bg-black/95"
-                      style={{
-                        backdropFilter: 'blur(20px)',
-                        WebkitBackdropFilter: 'blur(20px)',
-                      }}
-                    >
-                      <SelectItem value="transit">Transit</SelectItem>
-                      <SelectItem value="radial-velocity">Radial Velocity</SelectItem>
-                      <SelectItem value="direct-imaging">Direct Imaging</SelectItem>
-                      <SelectItem value="microlensing">Microlensing</SelectItem>
-                      <SelectItem value="timing">Timing Variations</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                {/* Stellar Radius */}
-                <div className="space-y-2">
-                  <Label htmlFor="stellarRadius" className="text-purple-200">Stellar Radius (R☉)</Label>
-                  <Input
-                    id="stellarRadius"
-                    type="number"
-                    step="0.01"
-                    value={formData.stellarRadius}
-                    onChange={(e) => handleChange('stellarRadius', e.target.value)}
-                    placeholder="e.g., 1.11"
-                    className="glass-input text-white placeholder:text-purple-500/40"
-                    required
-                  />
-                </div>
-
-                {/* Stellar Temperature */}
-                <div className="space-y-2">
-                  <Label htmlFor="stellarTemp" className="text-purple-200">Stellar Temperature (K)</Label>
-                  <Input
-                    id="stellarTemp"
-                    type="number"
-                    step="1"
-                    value={formData.stellarTemp}
-                    onChange={(e) => handleChange('stellarTemp', e.target.value)}
-                    placeholder="e.g., 5757"
-                    className="glass-input text-white placeholder:text-purple-500/40"
-                    required
-                  />
-                </div>
-
-                {/* Distance */}
-                <div className="space-y-2">
-                  <Label htmlFor="distance" className="text-purple-200">Distance (light years)</Label>
-                  <Input
-                    id="distance"
-                    type="number"
-                    step="0.01"
-                    value={formData.distance}
-                    onChange={(e) => handleChange('distance', e.target.value)}
-                    placeholder="e.g., 1400"
-                    className="glass-input text-white placeholder:text-purple-500/40"
-                    required
-                  />
-                </div>
+                {['time', 'flux', 'period', 't0'].map((field) => (
+                  <div key={field} className="space-y-2">
+                    <Label htmlFor={field} className="text-purple-200">
+                      {field === 't0' ? 'T₀ (BJD)' : field.charAt(0).toUpperCase() + field.slice(1)}
+                    </Label>
+                    <Input
+                      id={field}
+                      type="text"
+                      value={formData[field as keyof FormData]}
+                      onChange={(e) => handleChange(field as keyof FormData, e.target.value)}
+                      onBlur={() => handleBlur(field as keyof FormData)}
+                      placeholder={
+                        field === 't0'
+                          ? '1'
+                          : field === 'period'
+                          ? '67'
+                          : '2454833, 67676767, 67, 6776'
+                      }
+                      className={`bg-white/5 border-white/10 text-white placeholder:text-purple-500/40 focus:border-purple-500/50 ${
+                        errors[field as keyof ValidationErrors] ? 'border-red-500' : ''
+                      }`}
+                      aria-invalid={!!errors[field as keyof ValidationErrors]}
+                      aria-describedby={`${field}-error`}
+                      required
+                    />
+                    {errors[field as keyof ValidationErrors] && (
+                      <p id={`${field}-error`} className="text-red-400 text-sm mt-1">
+                        {errors[field as keyof ValidationErrors]}
+                      </p>
+                    )}
+                  </div>
+                ))}
               </div>
 
-              {/* Notes */}
               <div className="space-y-2 mt-6">
                 <Label htmlFor="notes" className="text-purple-200">Additional Notes</Label>
                 <Textarea
@@ -265,15 +231,11 @@ export function DataInputForm({ onSubmit }: DataInputFormProps) {
                   value={formData.notes}
                   onChange={(e) => handleChange('notes', e.target.value)}
                   placeholder="Enter any additional observations or notes..."
-                  className="glass-input text-white placeholder:text-purple-500/40 min-h-24"
+                  className="bg-white/5 border-white/10 text-white placeholder:text-purple-500/40 min-h-24 focus:border-purple-500/50"
                 />
               </div>
 
-              <motion.div 
-                className="mt-8"
-                whileHover={{ scale: 1.01 }}
-                whileTap={{ scale: 0.99 }}
-              >
+              <motion.div className="mt-8" whileHover={{ scale: 1.01 }} whileTap={{ scale: 0.99 }}>
                 <Button
                   type="submit"
                   className="w-full h-14 relative overflow-hidden border-0 text-white"
