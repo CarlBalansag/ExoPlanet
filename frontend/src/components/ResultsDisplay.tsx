@@ -123,8 +123,8 @@ export function ResultsDisplay({ formData }: ResultsDisplayProps) {
           {/* Transit Quality Assessment */}
           <GlassCard delay={0.2}>
             <div className="p-6 md:p-8">
-              <h3 className="text-xl md:text-2xl mb-6 bg-gradient-to-r from-purple-300 to-purple-100 bg-clip-text text-transparent">
-                Transit Signal Quality
+              <h3 className="text-xl md:text-2xl mb-6 bg-gradient-to-r from-purple-300 to-purple-100 bg-clip-text text-transparent text-center">
+                Exoplanet Accuracy
               </h3>
               <div className="space-y-6">
                 <div className="text-center">
@@ -138,7 +138,6 @@ export function ResultsDisplay({ formData }: ResultsDisplayProps) {
                   </motion.div>
                   <p className="text-gray-400">Detection Confidence</p>
                 </div>
-                <Progress value={transitQuality.score} className="h-3" />
                 
                 <div 
                   className="mt-6 space-y-4 rounded-xl p-4 border"
@@ -146,14 +145,7 @@ export function ResultsDisplay({ formData }: ResultsDisplayProps) {
                     background: 'rgba(168, 85, 247, 0.05)',
                     borderColor: 'rgba(168, 85, 247, 0.15)',
                   }}
-                >
-                  <div className="flex items-center justify-between">
-                    <span className="text-purple-200">Signal Quality:</span>
-                    <Badge className="bg-purple-500/20 text-purple-200 border-purple-400/30">
-                      {transitQuality.quality}
-                    </Badge>
-                  </div>
-                  
+                > 
                   <div className="flex items-center justify-between">
                     <span className="text-purple-200">Transit Detected:</span>
                     <div className="flex items-center gap-2">
@@ -168,40 +160,10 @@ export function ResultsDisplay({ formData }: ResultsDisplayProps) {
             </div>
           </GlassCard>
 
-          {/* Transit Metrics */}
-          <GlassCard delay={0.3}>
-            <div className="p-6 md:p-8">
-              <h3 className="text-xl md:text-2xl mb-6 text-white">
-                Transit Characteristics
-              </h3>
-              <div className="space-y-4">
-                {metrics.map((metric, index) => (
-                  <motion.div
-                    key={metric.label}
-                    initial={{ opacity: 0, x: -20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ duration: 0.4, delay: 0.4 + index * 0.1 }}
-                    className="flex justify-between items-start p-3 rounded-xl border hover:bg-white/5 transition-all duration-300"
-                    style={{
-                      background: 'rgba(255, 255, 255, 0.03)',
-                      borderColor: 'rgba(255, 255, 255, 0.05)',
-                    }}
-                  >
-                    <div>
-                      <div className="text-gray-300">{metric.label}</div>
-                      <div className="text-sm text-gray-600">{metric.description}</div>
-                    </div>
-                    <div className="text-white">{metric.value}</div>
-                  </motion.div>
-                ))}
-              </div>
-            </div>
-          </GlassCard>
-
           {/* Observation Data */}
           <GlassCard delay={0.4}>
             <div className="p-6 md:p-8">
-              <h3 className="text-xl md:text-2xl mb-6 text-white">
+              <h3 className="text-xl md:text-2xl mb-6 bg-gradient-to-r from-purple-300 to-purple-100 bg-clip-text text-transparent text-center">
                 Observation Parameters
               </h3>
               <div className="space-y-4">
@@ -212,7 +174,7 @@ export function ResultsDisplay({ formData }: ResultsDisplayProps) {
                     borderColor: 'rgba(255, 255, 255, 0.05)',
                   }}
                 >
-                  <span className="text-gray-400">Time (BJD):</span>
+                  <span className="text-gray-400">Time:</span>
                   <span className="text-white">{formData.time}</span>
                 </div>
                 <div 
@@ -222,7 +184,7 @@ export function ResultsDisplay({ formData }: ResultsDisplayProps) {
                     borderColor: 'rgba(255, 255, 255, 0.05)',
                   }}
                 >
-                  <span className="text-gray-400">Normalized Flux:</span>
+                  <span className="text-gray-400">Flux:</span>
                   <span className="text-white">{formData.flux}</span>
                 </div>
                 <div 
@@ -232,7 +194,7 @@ export function ResultsDisplay({ formData }: ResultsDisplayProps) {
                     borderColor: 'rgba(255, 255, 255, 0.05)',
                   }}
                 >
-                  <span className="text-gray-400">Orbital Period:</span>
+                  <span className="text-gray-400">Period (days) </span>
                   <span className="text-white">{formData.period} days</span>
                 </div>
                 <div 
