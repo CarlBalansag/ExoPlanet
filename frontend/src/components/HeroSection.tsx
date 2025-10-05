@@ -138,7 +138,7 @@ export function HeroSection() {
                 color: '#c084fc',
               }}
             >
-              Nasa Space App Challenge
+              2025 NASA Space Apps Challenge
             </span>
           </motion.div>
 
@@ -197,12 +197,18 @@ export function HeroSection() {
             </Button>
 
             <Button
-              onClick={scrollToContent}
+              asChild
               size="lg"
               variant="outline"
               className="px-8 py-6 text-lg border-purple-500/40 text-white hover:bg-purple-500/10 backdrop-blur-sm"
             >
+              <a
+                href="https://www.spaceappschallenge.org/2025/challenges/a-world-away-hunting-for-exoplanets-with-ai/"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
               See more
+              </a>
             </Button>
           </motion.div>
 
