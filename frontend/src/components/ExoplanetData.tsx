@@ -116,6 +116,16 @@ export function ExoplanetData() {
                 Exoplanet Database
               </h3>
               
+                <div 
+                className="mt-8 text-md text-purple-300/70 rounded-xl p-4 border mb-4"
+                style={{
+                  background: 'rgba(168, 85, 247, 0.05)',
+                  borderColor: 'rgba(168, 85, 247, 0.1)',
+                }}
+              >
+                <p>M⊕ = Earth Mass | R⊕ = Earth Radius | MJ = Jupiter Mass | RJ = Jupiter Radius | ly = Light Years</p>
+              </div>
+
               <div className="overflow-x-auto">
                 <Table>
                   <TableHeader>
@@ -160,7 +170,7 @@ export function ExoplanetData() {
                 </Table>
               </div>
 
-              <div 
+              {/* <div 
                 className="mt-8 text-sm text-purple-300/70 rounded-xl p-4 border"
                 style={{
                   background: 'rgba(168, 85, 247, 0.05)',
@@ -168,7 +178,7 @@ export function ExoplanetData() {
                 }}
               >
                 <p>M⊕ = Earth Mass | R⊕ = Earth Radius | MJ = Jupiter Mass | RJ = Jupiter Radius | ly = Light Years</p>
-              </div>
+              </div> */}
             </div>
           </div>
         </motion.div>
