@@ -17,9 +17,9 @@ const exoplanetData = [
 ];
 
 const stats = [
-  { label: 'Total Exoplanets', value: '5,500+', gradient: 'from-purple-400 to-purple-600' },
-  { label: 'Confirmed Planets', value: '5,000+', gradient: 'from-purple-500 to-pink-500' },
-  { label: 'Candidates', value: '500+', gradient: 'from-purple-600 to-blue-500' },
+  { label: 'Total Exoplanets', value: '6,000+', gradient: 'from-purple-400 to-purple-600' },
+  { label: 'Confirmed Planets', value: '	2,700+', gradient: 'from-purple-500 to-pink-500' },
+  { label: 'Candidates', value: '1,900+', gradient: 'from-purple-600 to-blue-500' },
   { label: 'Planetary Systems', value: '4,000+', gradient: 'from-purple-400 to-indigo-500' },
 ];
 
