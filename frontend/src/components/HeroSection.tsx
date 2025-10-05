@@ -32,7 +32,7 @@ export function HeroSection() {
 
   return (
     <div className="relative min-h-screen flex items-center justify-center overflow-hidden bg-black">
-      <StarBackground starCount={500} />
+      <StarBackground starCount={100} />
       {/* Dense starfield background */}
       <div className="absolute inset-0">
         {stars.map((star) => (

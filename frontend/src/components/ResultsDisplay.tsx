@@ -99,7 +99,6 @@ export function ResultsDisplay({ formData }: ResultsDisplayProps) {
 
   return (
     <div>
-    <StarBackground starCount={500} />
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
@@ -137,7 +136,7 @@ export function ResultsDisplay({ formData }: ResultsDisplayProps) {
                     transition={{ duration: 0.8, delay: 0.4, type: 'spring' }}
                     className={`text-6xl md:text-7xl mb-3 ${transitQuality.color}`}
                   >
-                    {transitQuality.score}%
+                    0%
                   </motion.div>
                   <p className="text-gray-400">Detection Confidence</p>
                 </div>
@@ -154,7 +153,7 @@ export function ResultsDisplay({ formData }: ResultsDisplayProps) {
                     <div className="flex items-center gap-2">
                       <CheckCircle2 className="w-5 h-5 text-purple-300" />
                       <Badge className="bg-purple-500/20 text-purple-200 border-purple-400/30">
-                        Confirmed
+                        Uncofirmed
                       </Badge>
                     </div>
                   </div>

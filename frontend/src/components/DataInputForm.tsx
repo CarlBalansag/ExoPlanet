@@ -163,7 +163,7 @@ const getFieldPlaceholder = (field: string) => {
     <div className="min-h-screen py-24 px-4 relative bg-black">
       {/* Purple background glow */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full bg-purple-600/10 blur-3xl opacity-50" />
-      <StarBackground starCount={500} />
+      <StarBackground starCount={100} />
       <motion.div
         initial={{ opacity: 0, y: 50 }}
         whileInView={{ opacity: 1, y: 0 }}

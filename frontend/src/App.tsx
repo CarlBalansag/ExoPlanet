@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { HeroSection } from './components/HeroSection';
 import { ExoplanetData } from './components/ExoplanetData';
 import { ResultsDisplay } from './components/ResultsDisplay';
@@ -7,6 +7,14 @@ import DataInputForm, { FormData } from './components/DataInputForm';
 
 export default function App() {
   const [submittedData, setSubmittedData] = useState<FormData | null>(null);
+  const [message, setMessage] = useState('');
+
+  useEffect(() => {
+    fetch('http://localhost:5000/api/hello')
+      .then((res) => res.json())
+      .then((data) => setMessage(data.message));
+  }, []);
+
 
   const handleFormSubmit = (data: FormData) => {
     setSubmittedData(data);
