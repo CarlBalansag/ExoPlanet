@@ -136,7 +136,7 @@ export function ResultsDisplay({ formData }: ResultsDisplayProps) {
                     transition={{ duration: 0.8, delay: 0.4, type: 'spring' }}
                     className={`text-6xl md:text-7xl mb-3 ${transitQuality.color}`}
                   >
-                    0%
+                    17%
                   </motion.div>
                   <p className="text-gray-400">Detection Confidence</p>
                 </div>
