@@ -4,16 +4,16 @@ import { Badge } from './ui/badge';
 import { StarBackground } from './StarBackground';
 
 const exoplanetData = [
-  { name: 'Kepler-452b', distance: '1,400 ly', type: 'Super Earth', confirmed: true, mass: '5 M⊕', radius: '1.6 R⊕' },
-  { name: 'Proxima Centauri b', distance: '4.24 ly', type: 'Terrestrial', confirmed: true, mass: '1.27 M⊕', radius: '1.1 R⊕' },
-  { name: 'TRAPPIST-1e', distance: '39.5 ly', type: 'Terrestrial', confirmed: true, mass: '0.77 M⊕', radius: '0.92 R⊕' },
-  { name: 'HD 189733 b', distance: '64.5 ly', type: 'Gas Giant', confirmed: true, mass: '1.13 MJ', radius: '1.14 RJ' },
-  { name: 'TOI-700 d', distance: '101.4 ly', type: 'Super Earth', confirmed: true, mass: '1.72 M⊕', radius: '1.19 R⊕' },
-  { name: 'K2-18 b', distance: '124 ly', type: 'Mini-Neptune', confirmed: true, mass: '8.6 M⊕', radius: '2.6 R⊕' },
-  { name: 'Kepler-1649c', distance: '300 ly', type: 'Terrestrial', confirmed: true, mass: '1.06 M⊕', radius: '1.06 R⊕' },
-  { name: 'LHS 1140 b', distance: '40 ly', type: 'Super Earth', confirmed: true, mass: '6.6 M⊕', radius: '1.4 R⊕' },
-  { name: 'KOI-4878.01', distance: '1,075 ly', type: 'Super Earth', confirmed: false, mass: '3.2 M⊕', radius: '1.5 R⊕' },
-  { name: 'KOI-7923.01', distance: '890 ly', type: 'Gas Giant', confirmed: false, mass: '0.9 MJ', radius: '1.2 RJ' },
+  { name: 'Kepler-452b', distance: '1,400 ly', confirmed: true, mass: '5 M⊕', radius: '1.6 R⊕' },
+  { name: 'Proxima Centauri b', distance: '4.24 ly',  confirmed: true, mass: '1.27 M⊕', radius: '1.1 R⊕' },
+  { name: 'TRAPPIST-1e', distance: '39.5 ly',  confirmed: true, mass: '0.77 M⊕', radius: '0.92 R⊕' },
+  { name: 'HD 189733 b', distance: '64.5 ly',  confirmed: true, mass: '1.13 MJ', radius: '1.14 RJ' },
+  { name: 'TOI-700 d', distance: '101.4 ly',  confirmed: true, mass: '1.72 M⊕', radius: '1.19 R⊕' },
+  { name: 'K2-18 b', distance: '124 ly',  confirmed: true, mass: '8.6 M⊕', radius: '2.6 R⊕' },
+  { name: 'Kepler-1649c', distance: '300 ly', confirmed: true, mass: '1.06 M⊕', radius: '1.06 R⊕' },
+  { name: 'LHS 1140 b', distance: '40 ly',  confirmed: true, mass: '6.6 M⊕', radius: '1.4 R⊕' },
+  { name: 'KOI-4878.01', distance: '1,075 ly',  confirmed: false, mass: '3.2 M⊕', radius: '1.5 R⊕' },
+  { name: 'KOI-7923.01', distance: '890 ly', confirmed: false, mass: '0.9 MJ', radius: '1.2 RJ' },
 ];
 
 const stats = [
@@ -116,15 +116,24 @@ export function ExoplanetData() {
                 Exoplanet Database
               </h3>
               
+                <div 
+                className="mt-8 text-md text-purple-300/70 rounded-xl p-4 border mb-4"
+                style={{
+                  background: 'rgba(168, 85, 247, 0.05)',
+                  borderColor: 'rgba(168, 85, 247, 0.1)',
+                }}
+              >
+                <p>R⊕ = Earth Radii | Tₑq = Equilibrium Temperature (K) | g = Surface Gravity (m/s²)</p>
+              </div>
+
               <div className="overflow-x-auto">
                 <Table>
                   <TableHeader>
                     <TableRow className="border-purple-500/20 hover:bg-purple-500/5">
                       <TableHead className="text-purple-300">Name</TableHead>
-                      <TableHead className="text-purple-300">Distance</TableHead>
-                      <TableHead className="text-purple-300">Type</TableHead>
-                      <TableHead className="text-purple-300">Mass</TableHead>
-                      <TableHead className="text-purple-300">Radius</TableHead>
+                      <TableHead className="text-purple-300">Planetary Radius (Earth Radii)</TableHead>
+                      <TableHead className="text-purple-300">Equilibrium Temperature (K)</TableHead>
+                      <TableHead className="text-purple-300">Stellar Surface Gravity</TableHead>
                       <TableHead className="text-purple-300">Status</TableHead>
                     </TableRow>
                   </TableHeader>
@@ -140,7 +149,6 @@ export function ExoplanetData() {
                       >
                         <TableCell className="text-white">{planet.name}</TableCell>
                         <TableCell className="text-gray-400">{planet.distance}</TableCell>
-                        <TableCell className="text-gray-400">{planet.type}</TableCell>
                         <TableCell className="text-gray-400">{planet.mass}</TableCell>
                         <TableCell className="text-gray-400">{planet.radius}</TableCell>
                         <TableCell>
@@ -160,7 +168,7 @@ export function ExoplanetData() {
                 </Table>
               </div>
 
-              <div 
+              {/* <div 
                 className="mt-8 text-sm text-purple-300/70 rounded-xl p-4 border"
                 style={{
                   background: 'rgba(168, 85, 247, 0.05)',
@@ -168,7 +176,7 @@ export function ExoplanetData() {
                 }}
               >
                 <p>M⊕ = Earth Mass | R⊕ = Earth Radius | MJ = Jupiter Mass | RJ = Jupiter Radius | ly = Light Years</p>
-              </div>
+              </div> */}
             </div>
           </div>
         </motion.div>

@@ -1,4 +1,3 @@
-// imports
 import { motion } from 'framer-motion';
 import { useState } from 'react';
 import { Input } from './ui/input';
@@ -6,7 +5,7 @@ import { Label } from './ui/label';
 import { Button } from './ui/button';
 import { Textarea } from './ui/textarea';
 
-// star background component
+// Star background component
 function StarBackground({ starCount = 500 }) {
   const stars = Array.from({ length: starCount }, (_, i) => ({
     id: i,
@@ -35,7 +34,7 @@ function StarBackground({ starCount = 500 }) {
           transition={{
             duration: star.duration,
             repeat: Infinity,
-            ease: 'easeInOut',
+            ease: "easeInOut",
           }}
         />
       ))}
@@ -43,7 +42,6 @@ function StarBackground({ starCount = 500 }) {
   );
 }
 
-// interfaces
 interface DataInputFormProps {
   onSubmit: (data: FormData) => void;
 }
@@ -63,7 +61,6 @@ interface ValidationErrors {
   t0?: string;
 }
 
-// main component
 export default function DataInputForm({ onSubmit = (data) => console.log(data) }: Partial<DataInputFormProps>) {
   const [formData, setFormData] = useState<FormData>({
     time: '',
@@ -75,9 +72,10 @@ export default function DataInputForm({ onSubmit = (data) => console.log(data) }
 
   const [errors, setErrors] = useState<ValidationErrors>({});
 
+  // Validation function to check if a number has at least 4 different digits
   const hasFourDifferentDigits = (value: string): boolean => {
     if (!value) return false;
-    const digits = value.replace(/[^0-9]/g, '');
+    const digits = value.replace(/[^0-9]/g, ''); // Remove non-digit characters
     const uniqueDigits = new Set(digits.split(''));
     return uniqueDigits.size >= 4;
   };
@@ -104,28 +102,34 @@ export default function DataInputForm({ onSubmit = (data) => console.log(data) }
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-
+    
+    // Validate all fields
     const newErrors: ValidationErrors = {};
     (Object.keys(formData) as Array<keyof FormData>).forEach((field) => {
       if (field !== 'notes') {
         const error = validateField(field, formData[field]);
-        if (error) newErrors[field] = error;
+        if (error) {
+          newErrors[field as keyof ValidationErrors] = error;
+        }
       }
     });
 
     setErrors(newErrors);
 
+    // If no errors, submit the form
     if (Object.keys(newErrors).length === 0) {
       onSubmit(formData);
     }
   };
 
   const handleChange = (field: keyof FormData, value: string) => {
-    setFormData((prev) => ({ ...prev, [field]: value }));
-    if (errors[field]) {
-      setErrors((prev) => {
+    setFormData(prev => ({ ...prev, [field]: value }));
+    
+    // Clear error for this field when user types
+    if (errors[field as keyof ValidationErrors]) {
+      setErrors(prev => {
         const newErrors = { ...prev };
-        delete newErrors[field];
+        delete newErrors[field as keyof ValidationErrors];
         return newErrors;
       });
     }
@@ -135,16 +139,32 @@ export default function DataInputForm({ onSubmit = (data) => console.log(data) }
     if (field !== 'notes' && formData[field]) {
       const error = validateField(field, formData[field]);
       if (error) {
-        setErrors((prev) => ({ ...prev, [field]: error }));
+        setErrors(prev => ({ ...prev, [field]: error }));
       }
     }
   };
 
+  const getFieldLabel = (field: string) => {
+    if (field === 't0') return 'T₀ (BJD)';
+    if (field === 'period') return 'Period (days)';
+    return field.charAt(0).toUpperCase() + field.slice(1);
+  };
+
+const getFieldPlaceholder = (field: string) => {
+  if (field === 't0') return '67';
+  if (field === 'period') return '123';
+  if (field === 'time') return '67, 6767, 676767, 123';
+  if (field === 'flux') return '76, 7666, 76667, 67';
+  return '';
+};
+
+
   return (
     <div className="min-h-screen py-24 px-4 relative bg-black">
       <StarBackground starCount={500} />
+      {/* Purple background glow */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full bg-purple-600/10 blur-3xl opacity-50" />
-
+      
       <motion.div
         initial={{ opacity: 0, y: 50 }}
         whileInView={{ opacity: 1, y: 0 }}
@@ -193,7 +213,7 @@ export default function DataInputForm({ onSubmit = (data) => console.log(data) }
                 {['time', 'flux', 'period', 't0'].map((field) => (
                   <div key={field} className="space-y-2">
                     <Label htmlFor={field} className="text-purple-200">
-                      {field === 't0' ? 'T₀ (BJD)' : field.charAt(0).toUpperCase() + field.slice(1)}
+                      {getFieldLabel(field)}
                     </Label>
                     <Input
                       id={field}
@@ -201,22 +221,14 @@ export default function DataInputForm({ onSubmit = (data) => console.log(data) }
                       value={formData[field as keyof FormData]}
                       onChange={(e) => handleChange(field as keyof FormData, e.target.value)}
                       onBlur={() => handleBlur(field as keyof FormData)}
-                      placeholder={
-                        field === 't0'
-                          ? '1'
-                          : field === 'period'
-                          ? '67'
-                          : '2454833, 67676767, 67, 6776'
-                      }
+                      placeholder={getFieldPlaceholder(field)}
                       className={`bg-white/5 border-white/10 text-white placeholder:text-purple-500/40 focus:border-purple-500/50 ${
-                        errors[field as keyof ValidationErrors] ? 'border-red-500' : ''
+                        errors[field as keyof ValidationErrors] ? 'border-red-500/50' : ''
                       }`}
-                      aria-invalid={!!errors[field as keyof ValidationErrors]}
-                      aria-describedby={`${field}-error`}
                       required
                     />
                     {errors[field as keyof ValidationErrors] && (
-                      <p id={`${field}-error`} className="text-red-400 text-sm mt-1">
+                      <p className="text-red-500 text-sm mt-1">
                         {errors[field as keyof ValidationErrors]}
                       </p>
                     )}
@@ -224,6 +236,7 @@ export default function DataInputForm({ onSubmit = (data) => console.log(data) }
                 ))}
               </div>
 
+              {/* Notes */}
               <div className="space-y-2 mt-6">
                 <Label htmlFor="notes" className="text-purple-200">Additional Notes</Label>
                 <Textarea
@@ -235,7 +248,11 @@ export default function DataInputForm({ onSubmit = (data) => console.log(data) }
                 />
               </div>
 
-              <motion.div className="mt-8" whileHover={{ scale: 1.01 }} whileTap={{ scale: 0.99 }}>
+              <motion.div 
+                className="mt-8"
+                whileHover={{ scale: 1.01 }}
+                whileTap={{ scale: 0.99 }}
+              >
                 <Button
                   type="submit"
                   className="w-full h-14 relative overflow-hidden border-0 text-white"

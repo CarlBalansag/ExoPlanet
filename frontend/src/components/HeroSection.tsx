@@ -167,7 +167,7 @@ export function HeroSection() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 1.1 }}
           >
-            Discover the mysteries of worlds beyond our solar system. Analyze exoplanet data and explore the cosmic frontier with cutting-edge technology.
+            Using AI to discover new Exoplanets beyond our solar system using NASA data
           </motion.p>
 
           {/* Buttons */}
@@ -202,7 +202,7 @@ export function HeroSection() {
               variant="outline"
               className="px-8 py-6 text-lg border-purple-500/40 text-white hover:bg-purple-500/10 backdrop-blur-sm"
             >
-              Explore Data
+              See more
             </Button>
           </motion.div>
 
