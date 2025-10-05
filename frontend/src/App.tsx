@@ -51,10 +51,10 @@ export default function App() {
             }}
           >
             <p className="bg-gradient-to-r from-white via-purple-200 to-white bg-clip-text text-transparent mb-2 text-lg">
-              ExoPlanet Explorer - NASA Hackathon 2025
+              2025 NASA Space Apps Challenge
             </p>
             <p className="text-sm text-purple-300/70">
-              Exploring the cosmos, one exoplanet at a time
+              A World Away: Hunting for Exoplanets with AI
             </p>
           </div>
         </div>

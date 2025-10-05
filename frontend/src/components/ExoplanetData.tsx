@@ -47,7 +47,6 @@ export function ExoplanetData() {
           Exoplanet Statistics
         </motion.h2>
         <p className="text-center text-gray-400 mb-16 text-lg">
-          Exploring the vastness of discovered worlds
         </p>
 
         {/* Statistics Cards */}
@@ -123,7 +122,7 @@ export function ExoplanetData() {
                   borderColor: 'rgba(168, 85, 247, 0.1)',
                 }}
               >
-                <p>R⊕ = Earth Radii | Tₑq = Equilibrium Temperature (K) | g = Surface Gravity (m/s²)</p>
+                <p>R⊕ = Earth Radii | K = Kelvin</p>
               </div>
 
               <div className="overflow-x-auto">
@@ -131,7 +130,7 @@ export function ExoplanetData() {
                   <TableHeader>
                     <TableRow className="border-purple-500/20 hover:bg-purple-500/5">
                       <TableHead className="text-purple-300">Name</TableHead>
-                      <TableHead className="text-purple-300">Planetary Radius (Earth Radii)</TableHead>
+                      <TableHead className="text-purple-300">Planetary Radius (R⊕)</TableHead>
                       <TableHead className="text-purple-300">Equilibrium Temperature (K)</TableHead>
                       <TableHead className="text-purple-300">Stellar Surface Gravity</TableHead>
                       <TableHead className="text-purple-300">Status</TableHead>
