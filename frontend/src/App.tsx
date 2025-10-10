@@ -7,6 +7,7 @@ import DataInputForm, { FormData } from './components/DataInputForm';
 
 export default function App() {
   const [submittedData, setSubmittedData] = useState<FormData | null>(null);
+  const [modelResult, setModelResult] = useState<{ prediction: string; probability: number } | null>(null);
   const [message, setMessage] = useState('');
 
   useEffect(() => {
@@ -16,8 +17,9 @@ export default function App() {
   }, []);
 
 
-  const handleFormSubmit = (data: FormData) => {
+  const handleFormSubmit = (data: FormData, result?: { prediction: string; probability: number } | null) => {
     setSubmittedData(data);
+    if (typeof result !== 'undefined') setModelResult(result ?? null);
     // Scroll to results
     setTimeout(() => {
       const resultsSection = document.getElementById('results-section');
@@ -41,7 +43,7 @@ export default function App() {
       {/* Results Section */}
       {submittedData && (
         <div id="results-section">
-          <ResultsDisplay formData={submittedData} />
+          <ResultsDisplay formData={submittedData} modelResult={modelResult} />
         </div>
       )}
 

@@ -43,7 +43,8 @@ function StarBackground({ starCount = 500 }) {
 }
 
 interface DataInputFormProps {
-  onSubmit: (data: FormData) => void;
+  // onSubmit optionally receives the model result after the backend call
+  onSubmit: (data: FormData, result?: { prediction: string; probability: number } | null) => void;
 }
 
 export interface FormData {
@@ -61,7 +62,7 @@ interface ValidationErrors {
   t0?: string;
 }
 
-export default function DataInputForm({ onSubmit = (data) => console.log(data) }: Partial<DataInputFormProps>) {
+export default function DataInputForm({ onSubmit = (data, result) => console.log(data, result) }: Partial<DataInputFormProps>) {
   const [formData, setFormData] = useState<FormData>({
     time: '',
     flux: '',
@@ -119,33 +120,38 @@ export default function DataInputForm({ onSubmit = (data) => console.log(data) }
 
     setErrors(newErrors);
 
-    // If no errors, submit the form
+    // If no errors, submit the form and call backend
     if (Object.keys(newErrors).length === 0) {
-      onSubmit(formData);
-    }
+      try {
+        setLoading(true);
+        setErrorMessage(null);
+        setResult(null);
 
-    try {
-      setLoading(true);
-      setErrorMessage(null);
-      setResult(null);
+        const response = await fetch('http://127.0.0.1:5000/predict', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(formData),
+        });
 
-      const response = await fetch('https://main.d2k3jsz1ay4sj1.amplifyapp.com/predict', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData),
-      });
+        if (!response.ok) throw new Error('Network response was not ok');
+        const data = await response.json();
 
-      if (!response.ok) throw new Error('Network response was not ok');
-      const data = await response.json();
+        const newResult = {
+          prediction: data.prediction,
+          probability: data.probability,
+        };
 
-      setResult({
-        prediction: data.prediction,
-        probability: data.probability,
-      });
-    } catch (err) {
-      setErrorMessage('Error analyzing data. Please try again.');
-    } finally {
-      setLoading(false);
+        setResult(newResult);
+
+        // pass both formData and model result back to parent
+        onSubmit(formData, newResult);
+      } catch (err) {
+        setErrorMessage('Error analyzing data. Please try again.');
+        // inform parent that the request failed
+        try { onSubmit(formData, null); } catch (_) {}
+      } finally {
+        setLoading(false);
+      }
     }
 
 

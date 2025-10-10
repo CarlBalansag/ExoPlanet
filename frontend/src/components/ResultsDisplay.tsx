@@ -7,9 +7,10 @@ import { StarBackground } from './StarBackground';
 
 interface ResultsDisplayProps {
   formData: FormData;
+  modelResult?: { prediction: string; probability: number } | null;
 }
 
-export function ResultsDisplay({ formData }: ResultsDisplayProps) {
+export function ResultsDisplay({ formData, modelResult = null }: ResultsDisplayProps) {
   // Transit photometry calculations
   const calculateTransitDepth = () => {
     const flux = parseFloat(formData.flux);
@@ -128,6 +129,7 @@ export function ResultsDisplay({ formData }: ResultsDisplayProps) {
               <h3 className="text-xl md:text-2xl mb-6 bg-gradient-to-r from-purple-300 to-purple-100 bg-clip-text text-transparent text-center">
                 Exoplanet Accuracy
               </h3>
+              
               <div className="space-y-6">
                 <div className="text-center">
                   <motion.div
@@ -136,7 +138,7 @@ export function ResultsDisplay({ formData }: ResultsDisplayProps) {
                     transition={{ duration: 0.8, delay: 0.4, type: 'spring' }}
                     className={`text-6xl md:text-7xl mb-3 ${transitQuality.color}`}
                   >
-                    17%
+                    {modelResult ? `${(modelResult.probability * 100).toFixed(2)}%` : '—'}
                   </motion.div>
                   <p className="text-gray-400">Detection Confidence</p>
                 </div>
@@ -149,11 +151,11 @@ export function ResultsDisplay({ formData }: ResultsDisplayProps) {
                   }}
                 > 
                   <div className="flex items-center justify-between">
-                    <span className="text-purple-200">Transit Detected:</span>
+                    <span className="text-purple-200">Planet Detected:</span>
                     <div className="flex items-center gap-2">
                       <CheckCircle2 className="w-5 h-5 text-purple-300" />
                       <Badge className="bg-purple-500/20 text-purple-200 border-purple-400/30">
-                        Uncofirmed
+                        {modelResult ? modelResult.prediction : 'Unconfirmed'}
                       </Badge>
                     </div>
                   </div>
